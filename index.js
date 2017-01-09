@@ -27,7 +27,7 @@ Discovery.escape = function(str){
 
 Discovery.prototype.parse = function(data, rinfo){
   var lines = data.toString().split('\r\n');
-  var message = lines.splice(0, 1);
+  var message = lines.shift();
   var status  = message.split(' ');
   var headers = {};
   lines.filter(function(line){
