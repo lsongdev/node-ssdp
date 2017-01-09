@@ -2,7 +2,7 @@ const Discovery = require('..');
 
 var ssdp = new Discovery();
 
-ssdp.listen(function(err){
+ssdp.listen(1982, function(err){
   
   ssdp.search('*', {
     MAN: 'ssdp:discover',

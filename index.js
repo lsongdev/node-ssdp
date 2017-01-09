@@ -11,7 +11,7 @@ function Discovery(options){
   }
   EventEmitter.call(this);
   var defaults = {
-    port     : 1982,
+    port     : 1900,
     multicast: '239.255.255.250'
   };
   for(var k in options){
@@ -82,7 +82,9 @@ Discovery.prototype.listen = function(port, callback){
   if(typeof port === 'function'){
     callback = port; port = null;
   }
-  this.socket.bind(port || this.options.port, function(err){
+  port = port || this.options.port;
+  console.log(port);
+  this.socket.bind(port, function(err){
     this.setBroadcast(true);
     callback && callback(err);
   });
