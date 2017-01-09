@@ -79,13 +79,13 @@ Discovery.prototype.send = function(method, path, headers){
  * @return {[type]}            [description]
  */
 Discovery.prototype.listen = function(port, callback){
-  var err = null;
-  try{
-    this.socket.bind(port || this.options.port);
-  }catch(e){
-    err = e;
+  if(typeof port === 'function'){
+    callback = port; port = null;
   }
-  callback && callback(err);
+  this.socket.bind(port || this.options.port, function(err){
+    this.setBroadcast(true);
+    callback && callback(err);
+  });
   return this;
 };
 
