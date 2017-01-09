@@ -82,11 +82,16 @@ Discovery.prototype.listen = function(port, callback){
   if(typeof port === 'function'){
     callback = port; port = null;
   }
+  var err = null;
   port = port || this.options.port;
-  this.socket.bind(port, function(err){
-    this.setBroadcast(true);
-    callback && callback(err);
-  });
+  try{
+    this.socket.bind(port, function(err){
+      this.setBroadcast(true);
+    });
+  }catch(e){
+    err = e;
+  }
+  callback && callback(err);
   return this;
 };
 
