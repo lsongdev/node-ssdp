@@ -6,7 +6,7 @@ ssdp.on('response', function(response){
   console.log(response);
 });
 
-ssdp.listen(1982, function(err){
+ssdp.listen(function(err){
   
   ssdp.search('*', {
     MAN: 'ssdp:discover',

@@ -25,8 +25,8 @@ Discovery.escape = function(str){
   return str;
 };
 
-Discovery.prototype.parse = function(message, rinfo){
-  var lines = message.toString().split('\r\n');
+Discovery.prototype.parse = function(data, rinfo){
+  var lines = data.toString().split('\r\n');
   var message = lines.splice(0, 1);
   var status  = message.split(' ');
   var headers = {};
@@ -47,14 +47,10 @@ Discovery.prototype.parse = function(message, rinfo){
   return this;
 };
 
-Discovery.prototype.listen = function(port, callback){
-  if(typeof port === 'function'){
-    callback = port; port = null;
-  }
-  port = port || this.options.port;
-  this.socket.bind(port, function(err) {
+Discovery.prototype.listen = function(callback){
+  this.socket.bind(this.options.port, function(err) {
     this.setBroadcast(true);
-    callback && callback(err, port);
+    callback && callback(err);
   });
   return this;
 };
