@@ -48,10 +48,15 @@ Discovery.prototype.parse = function(message, rinfo){
 };
 
 Discovery.prototype.listen = function(port, callback){
+  if(typeof port === 'function'){
+    callback = port; port = null;
+  }
+  port = port || this.options.port;
   this.socket.bind(port, function(err) {
     this.setBroadcast(true);
     callback && callback(err, port);
   });
+  return this;
 };
 
 Discovery.prototype.search = function(path, headers){
@@ -71,10 +76,11 @@ Discovery.prototype.send = function(method, path, headers) {
   Object.keys(headers).forEach(name => {
     request.push([ name, Discovery.escape(headers[ name ]) ].join(': '));
   });
-  request.push();
-  // var message = new Buffer(request.join('\r\n'));
-  var message = new Buffer('M-SEARCH * HTTP/1.1\r\nMAN: \"ssdp:discover\"\r\nST: wifi_bulb\r\n');
-  this.socket.send(message, 0, message.length, 1982, '239.255.255.250');
+  request.push(null);
+  var message = new Buffer(request.join('\r\n'));
+  // var message = new Buffer('M-SEARCH * HTTP/1.1\r\nMAN: \"ssdp:discover\"\r\nST: wifi_bulb\r\n');
+  this.socket.send(message, 0, message.length, 
+    this.options.port, this.options.multicast);
   return this;
 };
 
