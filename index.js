@@ -66,9 +66,9 @@ Discovery.prototype.send = function(method, path, headers){
   Object.keys(headers).forEach(name => {
     request.push([ name, Discovery.escape(headers[ name ]) ].join(': '));
   });
-  var message = request.join('\r\n');
-  console.log(message);
-  this.socket.send(message, 0, message.length, 
+  request.push();
+  var message = new Buffer(request.join('\r\n'));
+  this.socket.send(message, 0, message.length,
     this.options.port, this.options.multicast, function(){});
   return this;
 };
@@ -83,7 +83,6 @@ Discovery.prototype.listen = function(port, callback){
     callback = port; port = null;
   }
   port = port || this.options.port;
-  console.log(port);
   this.socket.bind(port, function(err){
     this.setBroadcast(true);
     callback && callback(err);
