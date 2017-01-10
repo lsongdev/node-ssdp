@@ -1,8 +1,14 @@
 const udp          = require('dgram');
 const util         = require('util');
 const EventEmitter = require('events');
-
+/**
+ * [Discovery description]
+ * @param {[type]} options [description]
+ */
 function Discovery(options){
+  if(!(this instanceof Discovery)){
+    return new Discovery(options);
+  }
   EventEmitter.call(this);
   var defaults = {
     port     : 1900,
@@ -18,13 +24,22 @@ function Discovery(options){
 };
 
 util.inherits(Discovery, EventEmitter);
-
+/**
+ * [escape description]
+ * @param  {[type]} str [description]
+ * @return {[type]}     [description]
+ */
 Discovery.escape = function(str){
   if(/[:|\s]/.test(str)) 
     return '"' + str + '"';
   return str;
 };
-
+/**
+ * [parse description]
+ * @param  {[type]} data  [description]
+ * @param  {[type]} rinfo [description]
+ * @return {[type]}       [description]
+ */
 Discovery.prototype.parse = function(data, rinfo){
   var lines = data.toString().split('\r\n');
   var message = lines.shift();
@@ -46,7 +61,11 @@ Discovery.prototype.parse = function(data, rinfo){
   this.emit('response', response);
   return this;
 };
-
+/**
+ * [listen description]
+ * @param  {Function} callback [description]
+ * @return {[type]}            [description]
+ */
 Discovery.prototype.listen = function(callback){
   this.socket.bind(this.options.port, function(err) {
     this.setBroadcast(true);
@@ -54,14 +73,25 @@ Discovery.prototype.listen = function(callback){
   });
   return this;
 };
-
+/**
+ * [search description]
+ * @param  {[type]} path    [description]
+ * @param  {[type]} headers [description]
+ * @return {[type]}         [description]
+ */
 Discovery.prototype.search = function(path, headers){
   var method = 'M-SEARCH';
   path = path || '*';
   headers = headers || {};
   return this.send(method, path, headers);
 };
-
+/**
+ * [send description]
+ * @param  {[type]} method  [description]
+ * @param  {[type]} path    [description]
+ * @param  {[type]} headers [description]
+ * @return {[type]}         [description]
+ */
 Discovery.prototype.send = function(method, path, headers) {
   path    = path    || '*';
   headers = headers || {};
@@ -74,7 +104,6 @@ Discovery.prototype.send = function(method, path, headers) {
   });
   request.push(null);
   var message = new Buffer(request.join('\r\n'));
-  // var message = new Buffer('M-SEARCH * HTTP/1.1\r\nMAN: \"ssdp:discover\"\r\nST: wifi_bulb\r\n');
   this.socket.send(message, 0, message.length, 
     this.options.port, this.options.multicast);
   return this;

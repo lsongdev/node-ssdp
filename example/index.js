@@ -1,16 +1,13 @@
-const Discovery = require('..');
-
-var ssdp = new Discovery();
+const ssdp = require('..')({ 
+  port: 1982
+});
 
 ssdp.on('response', function(response){
   console.log(response);
 });
 
-ssdp.listen(function(err){
-  
-  ssdp.search('*', {
-    MAN: 'ssdp:discover',
-    ST : 'wifi_bulb'
-  });
-  
+ssdp.listen();
+ssdp.search('*', {
+  MAN: 'ssdp:discover',
+  ST : 'wifi_bulb'
 });
