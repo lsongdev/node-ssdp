@@ -4,8 +4,9 @@
  * @param {[type]} method  [description]
  * @param {[type]} headers [description]
  */
-function Packet(method, headers){
-  this.method = method || Packet.METHODS.SEARCH;
+function Packet(method, headers, path){
+  this.path    = path   || '*';
+  this.method  = method || Packet.METHODS.SEARCH;
   this.headers = {
     MAN: 'ssdp:discover'
   };
