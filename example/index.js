@@ -6,8 +6,4 @@ ssdp.on('response', function(response){
   console.log(response);
 });
 
-ssdp.listen();
-ssdp.search('*', {
-  MAN: 'ssdp:discover',
-  ST : 'wifi_bulb'
-});
+ssdp.search('wifi_bulb');
