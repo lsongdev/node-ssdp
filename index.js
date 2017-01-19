@@ -3,12 +3,12 @@ const util         = require('util');
 const EventEmitter = require('events');
 const Packet       = require('./packet');
 /**
- * [Discovery description]
+ * [SSDP description]
  * @param {[type]} options [description]
  */
-function Discovery(options){
-  if(!(this instanceof Discovery)){
-    return new Discovery(options);
+function SSDP(options){
+  if(!(this instanceof SSDP)){
+    return new SSDP(options);
   }
   EventEmitter.call(this);
   var defaults = {
@@ -28,7 +28,7 @@ function Discovery(options){
   return this;
 };
 
-util.inherits(Discovery, EventEmitter);
+util.inherits(SSDP, EventEmitter);
 
 /**
  * [parse description]
@@ -42,9 +42,11 @@ util.inherits(Discovery, EventEmitter);
  * @param  {Function} callback [description]
  * @return {[type]}            [description]
  */
-Discovery.prototype.listen = function(callback){
+SSDP.prototype.listen = function(callback){
+  var self = this;
   this.socket.bind(this.options.port, function(err) {
     this.setBroadcast(true);
+    this.addMembership(self.options.multicast);
     callback && callback(err);
   });
   return this;
@@ -55,7 +57,7 @@ Discovery.prototype.listen = function(callback){
  * @param  {[type]} headers [description]
  * @return {[type]}         [description]
  */
-Discovery.prototype.search = function(serviceType){
+SSDP.prototype.search = function(serviceType){
   if(this.socket._bindState === 0){
     return this.listen(function(){
       this.search(serviceType);
@@ -73,11 +75,16 @@ Discovery.prototype.search = function(serviceType){
  * @param  {[type]} headers [description]
  * @return {[type]}         [description]
  */
-Discovery.prototype.send = function(request) {
+SSDP.prototype.send = function(request) {
   var message = request.toBuffer();
   this.socket.send(message, 0, message.length, 
     this.options.port, this.options.multicast);
   return this;
 };
 
-module.exports = Discovery;
+SSDP.Server = require('./server');
+SSDP.createServer = function(){
+  return new SSDP.Server();
+};
+
+module.exports = SSDP;
