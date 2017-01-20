@@ -63,7 +63,7 @@ SSDP.prototype.search = function(serviceType){
       this.search(serviceType);
     }.bind(this));
   };
-  var request = new Packet(Packet.SEARCH, {
+  var request = new Packet(Packet.METHODS.SEARCH, {
     ST: serviceType
   });
   return this.send(request);
