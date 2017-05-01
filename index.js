@@ -31,13 +31,6 @@ function SSDP(options){
 util.inherits(SSDP, EventEmitter);
 
 /**
- * [parse description]
- * @param  {[type]} data  [description]
- * @param  {[type]} rinfo [description]
- * @return {[type]}       [description]
- */
-
-/**
  * [listen description]
  * @param  {Function} callback [description]
  * @return {[type]}            [description]
@@ -51,6 +44,7 @@ SSDP.prototype.listen = function(callback){
   });
   return this;
 };
+
 /**
  * [search description]
  * @param  {[type]} path    [description]
@@ -68,6 +62,7 @@ SSDP.prototype.search = function(serviceType){
   });
   return this.send(request);
 };
+
 /**
  * [send description]
  * @param  {[type]} method  [description]
@@ -79,6 +74,15 @@ SSDP.prototype.send = function(request) {
   var message = request.toBuffer();
   this.socket.send(message, 0, message.length, 
     this.options.port, this.options.multicast);
+  return this;
+};
+
+/**
+ * [close description]
+ * @return {[type]} [description]
+ */
+SSDP.prototype.close = function(){
+  this.socket.close();
   return this;
 };
 
