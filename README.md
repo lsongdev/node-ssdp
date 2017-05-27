@@ -11,7 +11,7 @@ $ npm i ssdp2
 ### Example
 
 ```js
-const ssdp = require('ssdp2')({ 
+const ssdp = require('ssdp2')({
   port: 1982
 });
 
@@ -22,6 +22,10 @@ ssdp.on('response', function(response){
 ssdp.search('wifi_bulb');
 
 ```
+
+### Spec
+
+- https://tools.ietf.org/html/draft-cai-ssdp-v1-03
 
 ### Contributing
 - Fork this Repo first

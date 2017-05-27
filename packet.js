@@ -3,6 +3,7 @@
  * [Packet description]
  * @param {[type]} method  [description]
  * @param {[type]} headers [description]
+ * @rfc https://tools.ietf.org/html/draft-cai-ssdp-v1-03
  */
 function Packet(method, headers, path){
   this.path    = path   || '*';
@@ -27,7 +28,7 @@ Packet.METHODS = {
  * @return {[type]}     [description]
  */
 Packet.escape = function(str){
-  if(/[:|\s]/.test(str)) 
+  if(/[:|\s]/.test(str))
     return '"' + str + '"';
   return str;
 };

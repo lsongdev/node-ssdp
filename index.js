@@ -5,6 +5,7 @@ const Packet       = require('./packet');
 /**
  * [SSDP description]
  * @param {[type]} options [description]
+ * @rfc https://tools.ietf.org/html/draft-cai-ssdp-v1-03
  */
 function SSDP(options){
   if(!(this instanceof SSDP)){
@@ -72,7 +73,7 @@ SSDP.prototype.search = function(serviceType){
  */
 SSDP.prototype.send = function(request) {
   var message = request.toBuffer();
-  this.socket.send(message, 0, message.length, 
+  this.socket.send(message, 0, message.length,
     this.options.port, this.options.multicast);
   return this;
 };
@@ -86,9 +87,13 @@ SSDP.prototype.close = function(){
   return this;
 };
 
+/**
+ * [Server description]
+ * @type {[type]}
+ */
 SSDP.Server = require('./server');
-SSDP.createServer = function(){
-  return new SSDP.Server();
+SSDP.createServer = function(options){
+  return new SSDP.Server(options);
 };
 
 module.exports = SSDP;
