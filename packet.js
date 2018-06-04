@@ -43,15 +43,13 @@ Packet.parse = function(data){
   var lines = data.toString().split('\r\n');
   var message = lines.shift();
   var status  = message.split(' ');
-  lines.filter(function(line){
-    return !!line.trim();
-  }).forEach(function(line){
-    var m = line.match(/(\w+):\s+?(.*)/);
-    response.headers[ m[1] ] = m[2];
+  lines.filter(Boolean).forEach(function(line){
+    const [ _, name, value ] = line.match(/(\w+):\s+?(.*)/);
+    response.headers[name] = value;
   });
-  response.version    = status[0];
-  response.statusCode = status[1];
-  response.statusText = status[2];
+  response.statusCode = status[0];
+  response.statusText = status[1];
+  response.version    = status[2];
   return response;
 };
 
@@ -60,14 +58,16 @@ Packet.parse = function(data){
  * @return {[type]} [description]
  */
 Packet.prototype.toBuffer = function(){
-  var request = [
-    [ this.method, this.path, 'HTTP/1.1' ].join(' ')
-  ];
+  const EOL = '\r\n';
+  const { method, path } = this;
+  let request = `${method} ${path} HTTP/1.1${EOL}`;
   Object.keys(this.headers).forEach(name => {
-    request.push([ name, Packet.escape(this.headers[ name ]) ].join(': '));
+    const value = Packet.escape(this.headers[ name ]);
+    request += `${name}: ${value}${EOL}`;
   });
-  request.push(null);
-  return new Buffer(request.join('\r\n'));
+  request += EOL;
+  request += EOL;
+  return Buffer.from(request);
 };
 
 module.exports = Packet;

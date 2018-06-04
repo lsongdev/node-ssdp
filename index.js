@@ -37,10 +37,10 @@ util.inherits(SSDP, EventEmitter);
  * @return {[type]}            [description]
  */
 SSDP.prototype.listen = function(callback){
-  var self = this;
-  this.socket.bind(this.options.port, function(err) {
+  const { port, multicast } = this.options;
+  this.socket.bind(port, function(err){
     this.setBroadcast(true);
-    this.addMembership(self.options.multicast);
+    this.addMembership(multicast);
     callback && callback(err);
   });
   return this;
@@ -54,11 +54,9 @@ SSDP.prototype.listen = function(callback){
  */
 SSDP.prototype.search = function(serviceType){
   if(this.socket._bindState === 0){
-    return this.listen(function(){
-      this.search(serviceType);
-    }.bind(this));
-  };
-  var request = new Packet(Packet.METHODS.SEARCH, {
+    return this.listen(this.search.bind(this, serviceType));
+  }
+  const request = new Packet(Packet.METHODS.SEARCH, {
     ST: serviceType
   });
   return this.send(request);
@@ -72,9 +70,9 @@ SSDP.prototype.search = function(serviceType){
  * @return {[type]}         [description]
  */
 SSDP.prototype.send = function(request) {
-  var message = request.toBuffer();
-  this.socket.send(message, 0, message.length,
-    this.options.port, this.options.multicast);
+  const { port, multicast } = this.options;
+  const message = request.toBuffer();
+  this.socket.send(message, 0, message.length, port, multicast);
   return this;
 };
 
