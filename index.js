@@ -20,12 +20,19 @@ function SSDP(options){
     defaults[ k ] = options[ k ];
   }
   this.options = defaults;
+  this.isBound = false
   this.socket = udp.createSocket('udp4');
   this.socket.on('message', function(data, rinfo){
     var response = Packet.parse(data);
     response.remote = rinfo;
     this.emit('response', response);
   }.bind(this));
+  this.socket.on('listening', () => {
+    this.isBound = true
+  })
+  this.socket.on('close', () => {
+    this.isBound = false
+  })
   return this;
 };
 
@@ -53,7 +60,7 @@ SSDP.prototype.listen = function(callback){
  * @return {[type]}         [description]
  */
 SSDP.prototype.search = function(serviceType){
-  if(this.socket._bindState === 0){
+  if(this.isBound === false){
     return this.listen(this.search.bind(this, serviceType));
   }
   const request = new Packet(Packet.METHODS.SEARCH, {
