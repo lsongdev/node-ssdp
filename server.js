@@ -1,12 +1,18 @@
 const udp          = require('dgram');
-const util         = require('util');
 const EventEmitter = require('events');
 
-
-function Server(){
-  EventEmitter.call(this);
+class Server extends EventEmitter {
+  constructor(){
+    super();
+    this.socket = udp.createSocket('udp4');
+    this.socket.on('message', this.onMessage.bind(this));
+  }
+  listen(port){
+    this.socket.bind(port);
+  }
+  onMessage(message, remote){
+    this.emit('message', message, remote);
+  }
 }
-
-util.inherits(Server, EventEmitter);
 
 module.exports = Server;

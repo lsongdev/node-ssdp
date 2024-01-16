@@ -1,6 +1,6 @@
 ## ssdp2 ![ssdp2@1.0.0](https://img.shields.io/npm/v/ssdp2.svg)
 
-> simple service discovery protocol implementation in nodejs
+> Simple Service Discovery Protocol Implementation In Node.js
 
 ### Installation
 
@@ -11,7 +11,9 @@ $ npm i ssdp2
 ### Example
 
 ```js
-const ssdp = require('ssdp2')({
+const SSDP = require('ssdp2');
+
+const ssdp = new SSDP({
   port: 1982
 });
 
@@ -21,6 +23,8 @@ ssdp.on('response', function(response){
 
 ssdp.search('wifi_bulb');
 
+// DONT FORGET TO CLOSE
+// ssdp.close();
 ```
 
 ### Spec
